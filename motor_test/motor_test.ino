@@ -3,11 +3,11 @@
 #define L LOW
 #define INP INPUT
 #define OTP OUTPUT
-int In1=13;
-int In2=12;
-int In3=11;
-int In4=10;
-int spd=75;
+cint In1=13;
+cint In2=12;
+cint In3=11;
+cint In4=10;
+cint spd=75;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
