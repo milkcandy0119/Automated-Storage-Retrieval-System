@@ -5,7 +5,15 @@ For CSHS maker class(by 307)
 > 2022/11/22-> basic linefollower / motor control(L298N) / Sensor control / basic movement / some val
 
 
-## movement
-> turnleft() -> 90 degree \
-> turnright() -> 90 degree 
-> mforword() ->
+## robot main movement
+> turnleft(SensorLeft, SensorRight) -> 90 degree \
+> turnright(SensorLeft, SensorRight) -> 90 degree \
+> mforward() -> forward \
+> mback() -> backword \
+> mleft() -> left \
+> mright() -> right \
+> mstop() -> stop \
+
+## lift system motor control
+> m_up() -> up \
+> m_down -> down \
