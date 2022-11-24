@@ -10,6 +10,9 @@ https://github.com/coopermaa/Arduino-IRremote.git
 > 2022/11/24 -> debug(motor left&right) / include <IRremote.h> / REVC / CAR MP3 \
 > 
 
+## function
+> CheckCode() //Car MP3 1~9 \
+> linefollower(SensorLeft, SensorRight) \
 
 ## robot main movement
 > turnleft(SensorLeft, SensorRight) -> 90 degree \
