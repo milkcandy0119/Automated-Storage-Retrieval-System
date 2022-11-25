@@ -63,7 +63,7 @@ void loop() {
   //linefollower(SL,SR);
   if(irrecv.decode(&results)){
     CheckCode();
-    irrecv.resume();
+    irrecv.resume(); // 重複偵測
     delay(100);
   }
   
