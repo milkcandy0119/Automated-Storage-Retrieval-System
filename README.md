@@ -15,20 +15,20 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 > 2022/11/26 -> found a bug let us confuse???
 
 ## Function
-> CheckCode() //Car MP3 1~9 \
+> CheckCode( ) //Car MP3 1~9 \
 > linefollower(SensorLeft, SensorRight) \
 > up_and_down(int op) \
-> In_Client() 
+> In_Client( ) 
 
 ## Robot Main Movement
 > turnleft(SensorLeft, SensorRight) -> 90 degree \
 > turnright(SensorLeft, SensorRight) -> 90 degree \
-> mforward() -> forward \
-> mback() -> backword \
-> mleft() -> left \
-> mright() -> right \
-> mstop() -> stop 
+> mforward( ) -> forward \
+> mback( ) -> backword \
+> mleft( ) -> left \
+> mright( ) -> right \
+> mstop( ) -> stop 
 
 ## Lift System Motor Control
-> m_up() -> up \
-> m_down() -> down 
+> m_up( ) -> up \
+> m_down( ) -> down 
