@@ -60,8 +60,13 @@ void loop() {
   int SL=digitalRead(LineFollower1);  //SensorLeft
   int SR=digitalRead(LineFollower2);  //SensorRight
   int SM=digitalRead(LineFollower3);  //SensorMark
-  linefollower(SL,SR);
-  CheckCode();
+  //linefollower(SL,SR);
+  if(irrecv.decode(&results)){
+    CheckCode();
+    irrecv.resume();
+    delay(100);
+  }
+  
 }
 
 void CheckCode(){
@@ -106,8 +111,10 @@ void CheckCode(){
       Serial.println ("Button 9");
       Serial.println(results.value, HEX);
       break;
+      
     default:
       Serial.println(results.value, HEX);
+      break;
   }
 }
 
