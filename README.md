@@ -31,4 +31,4 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 
 ## Lift System Motor Control
 > m_up() -> up \
-> m_down -> down 
+> m_down() -> down 
