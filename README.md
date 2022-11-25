@@ -18,7 +18,7 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 > CheckCode() //Car MP3 1~9 \
 > linefollower(SensorLeft, SensorRight) \
 > up_and_down(int op) \
-> In_Client() \
+> In_Client() 
 
 ## Robot Main Movement
 > turnleft(SensorLeft, SensorRight) -> 90 degree \
@@ -27,8 +27,8 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 > mback() -> backword \
 > mleft() -> left \
 > mright() -> right \
-> mstop() -> stop \
+> mstop() -> stop 
 
 ## Lift System Motor Control
 > m_up() -> up \
-> m_down -> down \
+> m_down -> down 
