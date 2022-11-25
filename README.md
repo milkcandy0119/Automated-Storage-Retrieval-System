@@ -1,12 +1,12 @@
 # Automated Storage & Retrieval System
 For CSHS maker class(by 307)
 
-## resource
+## Resource
 allways download IRremote by shirriff \
 if not found \
 https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in arduino
 
-## update
+## Update
 > 2022/11/22 -> basic linefollower / motor control(L298N) / Sensor control / basic movement / some val \
 > 2022/11/23 -> motor_test \
 > 2022/11/24 -> debug(motor left&right) / include <IRremote.h> / REVC / CAR MP3 \
@@ -14,13 +14,13 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 > 2022/11/26 -> debug (In_Client()) / add main step / function add up_and_down & In_Client / easy task contral \
 > 2022/11/26 -> found a bug let us confuse???
 
-## function
+## Function
 > CheckCode() //Car MP3 1~9 \
 > linefollower(SensorLeft, SensorRight) \
 > up_and_down(int op) \
 > In_Client() \
 
-## robot main movement
+## Robot Main Movement
 > turnleft(SensorLeft, SensorRight) -> 90 degree \
 > turnright(SensorLeft, SensorRight) -> 90 degree \
 > mforward() -> forward \
@@ -29,6 +29,6 @@ https://github.com/coopermaa/Arduino-IRremote.git => if dont have IRremote in ar
 > mright() -> right \
 > mstop() -> stop \
 
-## lift system motor control
+## Lift System Motor Control
 > m_up() -> up \
 > m_down -> down \
