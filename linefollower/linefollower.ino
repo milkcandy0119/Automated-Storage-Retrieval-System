@@ -38,6 +38,8 @@ cint In6=6; //lift input2
 IRrecv irrecv(RECV_PIN); // 初始化紅外線訊號輸入
 decode_results results; // 儲存訊號的結構
 
+int task;
+
 void setup() {
   Serial.begin(9600);
   //Line Follower
@@ -60,56 +62,115 @@ void loop() {
   int SL=digitalRead(LineFollower1);  //SensorLeft
   int SR=digitalRead(LineFollower2);  //SensorRight
   int SM=digitalRead(LineFollower3);  //SensorMark
-  //linefollower(SL,SR);
-  if(irrecv.decode(&results)){
-    CheckCode();
-    irrecv.resume(); // 重複偵測
-    delay(100);
+  In_Client();
+  //do task
+  while(SM!=1){
+    linefollower(SL,SR);
   }
+  mstop();
+  turnright(SL,SR);
+  int count=0;
+  while(SM!=1 && task==count){  //待改task==count 怪怪的
+    if(SM==1){
+      mstop();
+      count++;
+      delay(1000);
+    }
+    else{
+      linefollower(SL,SR);
+    }
+  }
+  turnright(SL,SR);
+  up_and_down(1); //get 1~3 4~6 7~9
+  while(SM!=1){
+    linefollower(SL,SR);
+  }
+  mstop();
+  up_and_down(3);
   
+}
+
+void In_Client(){
+  irrecv.resume();
+  while(!results.value!=botton_0){
+    if(irrecv.decode(&results)){
+      CheckCode();
+      irrecv.resume(); // 重複偵測
+      if(results.value==botton_0){
+        Serial.println ("Out!");
+        return;
+      }
+      delay(100);
+    }
+  } 
+}
+
+void up_and_down(int op){
+  if(op==0){ //0 down
+    m_down();
+    //待調整...
+    //待調整...
+    //待調整...
+    mstop();
+  }
+  else if(op==1){ //1 up
+    m_up();
+    //待調整...
+    //待調整...
+    //待調整...
+    mstop();
+  }
+  else{ //3 put in
+     m_up();
+     m_down();
+    //待調整...
+    //待調整...
+    //待調整...
+    mstop();
+  }
+  mback();
 }
 
 void CheckCode(){
   switch(results.value){
     case botton_0:
       Serial.println ("Button 0");
-      Serial.println(results.value, HEX);
       break;
     case botton_1:
       Serial.println ("Button 1");
-      Serial.println(results.value, HEX);
+      task=1;
       break;
     case botton_2:
-      Serial.println ("Button 2");
-      Serial.println(results.value, HEX);
+      Serial.println ("Button 2");      
+      task=2;
       break;
     case botton_3:
       Serial.println ("Button 3");
-      Serial.println(results.value, HEX);
+      task=3;
       break;
     case botton_4:
       Serial.println ("Button 4");
-      Serial.println(results.value, HEX);
+      task=4;
       break;
     case botton_5:
       Serial.println ("Button 5");
-      Serial.println(results.value, HEX);
+      task=5;
       break;
     case botton_6:
       Serial.println ("Button 6");
-      Serial.println(results.value, HEX);
+      task=6;
       break;
     case botton_7:
       Serial.println ("Button 7");
-      Serial.println(results.value, HEX);
+      task=7;
       break;
     case botton_8:
       Serial.println ("Button 8");
-      Serial.println(results.value, HEX);
+      task=8;
       break;
     case botton_9:
       Serial.println ("Button 9");
-      Serial.println(results.value, HEX);
+      task=9;
       break;
       
     default:
@@ -198,6 +259,8 @@ int mstop(){//0000
   analogWrite(In2,0);
   analogWrite(In3,0);
   analogWrite(In4,0);
+  analogWrite(In5,0);
+  analogWrite(In6,0);
 }
 
 int m_up(){
