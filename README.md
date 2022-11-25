@@ -1,4 +1,4 @@
-# linefollower
+# Automated Storage & Retrieval System
 For CSHS maker class(by 307)
 
 ## resource
