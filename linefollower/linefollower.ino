@@ -17,8 +17,8 @@
 #define botton_8 0xFF4AB5
 #define botton_9 0xFF52AD
 
-cint spd=75;  //0-255 speed
-cint control=50; //lift motor speed
+cint spd=255;  //0-255 speed
+cint control=180; //lift motor speed
 cint gangan_timer=500; //node
 cint timer=100; //ms *1ms=0.001s
 //RECV
@@ -39,6 +39,8 @@ IRrecv irrecv(RECV_PIN); // 初始化紅外線訊號輸入
 decode_results results; // 儲存訊號的結構
 
 int task;
+
+int data[10];
 
 void setup() {
   Serial.begin(9600);
@@ -64,6 +66,7 @@ void loop() {
   int SM=digitalRead(LineFollower3);  //SensorMark
   In_Client();
   //do task
+  data[task]=(data[task]+1)%2;// 1 in 0 out
   while(SM!=1){
     linefollower(SL,SR);
   }
@@ -108,6 +111,7 @@ void In_Client(){
 void up_and_down(int op){
   if(op==0){ //0 down
     m_down();
+    delay(1000);
     //待調整...
     //待調整...
     //待調整...
@@ -115,6 +119,7 @@ void up_and_down(int op){
   }
   else if(op==1){ //1 up
     m_up();
+    delay(1000);
     //待調整...
     //待調整...
     //待調整...
@@ -123,6 +128,8 @@ void up_and_down(int op){
   else{ //3 put in
      m_up();
      m_down();
+     mforward();
+     mback();
     //待調整...
     //待調整...
     //待調整...
