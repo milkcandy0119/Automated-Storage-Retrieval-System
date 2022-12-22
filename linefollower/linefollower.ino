@@ -64,8 +64,11 @@ void loop() {
   int SL=digitalRead(LineFollower1);  //SensorLeft
   int SR=digitalRead(LineFollower2);  //SensorRight
   int SM=digitalRead(LineFollower3);  //SensorMark
+  
   In_Client();
+  //Serial.println (task);
   //do task
+  /*
   data[task]=(data[task]+1)%2;// 1 in 0 out
   while(SM!=1){
     linefollower(SL,SR);
@@ -73,7 +76,7 @@ void loop() {
   mstop();
   turnright(SL,SR);
   int count=0;
-  while(SM!=1 && task==count){  //待改task==count 怪怪的
+  while(count != (task/3==0)? task/3 : (task+3)/3){  //待改task==count 怪怪的 OK
     if(SM==1){
       mstop();
       count++;
@@ -90,7 +93,7 @@ void loop() {
   }
   mstop();
   up_and_down(3);
-  
+  */
 }
 
 void In_Client(){
