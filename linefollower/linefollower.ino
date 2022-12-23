@@ -7,15 +7,25 @@
 #define OTP OUTPUT
 //car MP3
 #define botton_0 0xFF6897
+#define botton_0a C101E57B
 #define botton_1 0xFF30CF
+#define botton_1a 9716BE3F
 #define botton_2 0xFF18E7
+#define botton_2a 3D9AE3F7
 #define botton_3 0xFF7A85
+#define botton_3a 6182021B
 #define botton_4 0xFF10EF
+#define botton_4a 8C22657B
 #define botton_5 0xFF38C7
+#define botton_5a 488F3CBB
 #define botton_6 0xFF5AA5
+#define botton_6a 449E79F
 #define botton_7 0xFF42BD
+#define botton_7a 32C6FDF7
 #define botton_8 0xFF4AB5
+#define botton_8a 1BC0157B
 #define botton_9 0xFF52AD
+#define botton_9a 3EC3FC1B
 
 cint spd=255;  //0-255 speed
 cint control=180; //lift motor speed
@@ -66,7 +76,7 @@ void loop() {
   int SM=digitalRead(LineFollower3);  //SensorMark
   
   In_Client();
-  //Serial.println (task);
+  Serial.println (task);
   //do task
   /*
   data[task]=(data[task]+1)%2;// 1 in 0 out
@@ -178,7 +188,7 @@ void CheckCode(){
       Serial.println ("Button 8");
       task=8;
       break;
-    case botton_9:
+    case botton_9: 
       Serial.println ("Button 9");
       task=9;
       break;
