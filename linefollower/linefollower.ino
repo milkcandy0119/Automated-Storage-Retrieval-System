@@ -7,25 +7,16 @@
 #define OTP OUTPUT
 //car MP3
 #define botton_0 0xFF6897
-#define botton_0a C101E57B
 #define botton_1 0xFF30CF
-#define botton_1a 9716BE3F
-#define botton_2 0xFF18E7
-#define botton_2a 3D9AE3F7
+#define botton_2 0xFF18E7 
 #define botton_3 0xFF7A85
-#define botton_3a 6182021B
 #define botton_4 0xFF10EF
-#define botton_4a 8C22657B
 #define botton_5 0xFF38C7
-#define botton_5a 488F3CBB
 #define botton_6 0xFF5AA5
-#define botton_6a 449E79F
 #define botton_7 0xFF42BD
-#define botton_7a 32C6FDF7
 #define botton_8 0xFF4AB5
-#define botton_8a 1BC0157B
 #define botton_9 0xFF52AD
-#define botton_9a 3EC3FC1B
+
 
 cint spd=255;  //0-255 speed
 cint control=180; //lift motor speed
@@ -74,16 +65,19 @@ void loop() {
   int SL=digitalRead(LineFollower1);  //SensorLeft
   int SR=digitalRead(LineFollower2);  //SensorRight
   int SM=digitalRead(LineFollower3);  //SensorMark
-  
+  mforward();
+  /*
+  mstop();
   In_Client();
   Serial.println (task);
   //do task
-  /*
-  data[task]=(data[task]+1)%2;// 1 in 0 out
+  
+  //data[task]=(data[task]+1)%2;// 1 in 0 out
   while(SM!=1){
     linefollower(SL,SR);
   }
   mstop();
+  
   turnright(SL,SR);
   int count=0;
   while(count != (task/3==0)? task/3 : (task+3)/3){  //待改task==count 怪怪的 OK
@@ -116,7 +110,7 @@ void In_Client(){
         Serial.println ("Out!");
         return;
       }
-      delay(100);
+      delay(1000);
     }
   } 
 }
@@ -192,7 +186,47 @@ void CheckCode(){
       Serial.println ("Button 9");
       task=9;
       break;
-      
+    /*
+    case "C101E57B":
+      Serial.println ("Button 0");
+      break;
+    case "9716BE3F":
+      Serial.println ("Button 1");
+      task=1;
+      break;
+    case "3D9AE3F7":
+      Serial.println ("Button 2");      
+      task=2;
+      break;
+    case "6182021B":
+      Serial.println ("Button 3");
+      task=3;
+      break;
+    case "8C22657B":
+      Serial.println ("Button 4");
+      task=4;
+      break;
+    case "488F3CBB":
+      Serial.println ("Button 5");
+      task=5;
+      break;
+    case "449E79F":
+      Serial.println ("Button 6");
+      task=6;
+      break;
+    case "32C6FDF7":
+      Serial.println ("Button 7");
+      task=7;
+      break;
+    case "1BC0157B":
+      Serial.println ("Button 8");
+      task=8;
+      break;
+    case "3EC3FC1B": 
+      Serial.println ("Button 9");
+      task=9;
+      break;
+    */    
     default:
       Serial.println(results.value, HEX);
       break;
@@ -248,7 +282,7 @@ int turnright(int l,int r){
 
 int mforward(){//1010
   analogWrite(In1,spd);
-  analogWrite(In2,0);
+  analogWrite(In2,0); 
   analogWrite(In3,spd);
   analogWrite(In4,0);
 }
