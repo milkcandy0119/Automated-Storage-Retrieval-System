@@ -20,8 +20,8 @@
 
 cint spd=255;  //0-255 speed
 cint control=255; //lift motor speed
-cint gangan_timer=500; //node
-cint timer=100; //ms *1ms=0.001s
+cint gangan_timer=370; //node
+cint timer=10; //ms *1ms=0.001s
 //RECV
 cint RECV_PIN = 9;
 //Sensor
@@ -36,13 +36,15 @@ cint In4=6; //motor input4(left)
 cint In5=7; //lift input1
 cint In6=8; //lift input2
 
+cint rgb=2;
+
 double is_item=1/8;
 int init_speed=40;
 
 IRrecv irrecv(RECV_PIN); // 初始化紅外線訊號輸入
 decode_results results; // 儲存訊號的結構
 
-int task;
+int task,SM=1;
 
 int data[10];
 
@@ -60,15 +62,16 @@ void setup() {
   //lift motor
   pinMode(In5,OTP);
   pinMode(In6,OTP);
+  pinMode(rgb,OTP);
   //RECV
   irrecv.enableIRIn(); // 啟動接收
 }
 
 void loop() {
-  int SL=digitalRead(LineFollower1);  //SensorLeft
-  int SR=digitalRead(LineFollower2);  //SensorRight
-  int SM=digitalRead(LineFollower3);  //SensorMark
-
+  SM=1;
+  digitalWrite(rgb,1);
+  delay(1000);
+  digitalWrite(rgb,0);
   In_Client();
   if(task == 1){
     for(int i=0;i<20;i++){
@@ -78,7 +81,7 @@ void loop() {
       delay(40);
     }
     mstop();
-  }else if(task == 2){
+  }else if(task == 3){
     for(int i=0;i<20;i++){
       m_down();
       delay(5);
@@ -99,12 +102,24 @@ void loop() {
     delay(1000);
     mstop();
   }else if(task == 6){
+      analogWrite(rgb,1);
+      delay(2000);
+      analogWrite(rgb,0);
+    /*
     mright();
     delay(1000);
     mstop();
+    \*/
   }else if(task == 5){
-    linefollower(SL,SR);
-    delay(5000);
+    mstop();
+    while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark
+      linefollower();
+      //Serial.println (SR);
+    }
+    mstop();
+    delay(1000);
+    turnleft();
     mstop();
   }else{
     mstop();
@@ -193,42 +208,72 @@ void CheckCode(){
   switch(results.value){
     case botton_0:
       Serial.println ("Button 0");
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);
       break;
     case botton_1:
       Serial.println ("Button 1");
       task=1;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);      
       break;
     case botton_2:
       Serial.println ("Button 2");      
       task=2;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);     
       break;
     case botton_3:
       Serial.println ("Button 3");
       task=3;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);     
       break;
     case botton_4:
       Serial.println ("Button 4");
       task=4;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);     
       break;
     case botton_5:
       Serial.println ("Button 5");
       task=5;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);      
       break;
     case botton_6:
       Serial.println ("Button 6");
       task=6;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);
       break;
     case botton_7:
       Serial.println ("Button 7");
       task=7;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);      
       break;
     case botton_8:
       Serial.println ("Button 8");
       task=8;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);
       break;
     case botton_9: 
       Serial.println ("Button 9");
       task=9;
+      digitalWrite(rgb,1);
+      delay(2000);
+      digitalWrite(rgb,0);      
       break;
         
     default:
@@ -238,49 +283,66 @@ void CheckCode(){
 }
 
 //1=white 0=black
-void linefollower(int l,int r){
-  if(l==1 && r==1){
+void linefollower(){
+  int l=digitalRead(LineFollower1);  //SensorLeft
+  int r=digitalRead(LineFollower2);  //SensorRight
+  
+  if(l==0 && r==0){
     mforward();
   }
-  else if(l==0 && r==1){
-    //mstop();
-    //delay(timer);
+  if(l==0 && r==1){
+    mstop();
+    delay(timer);
     mleft();
-    //delay(timer);
+    delay(timer);
   }
-  else if(l==1 && r==0){
-    //mstop();
-    //delay(timer);
+  if(l==1 && r==0){
+    mstop();
+    delay(timer);
     mright();
-    //delay(timer);
+    delay(timer);
   }
-  else if(l==0 && r==0){
+  if(l==1 && r==1){
     mstop();
     delay(timer);
   }
 }
 
-int turnleft(int l,int r){
+int turnleft(){
   mforward();
   delay(gangan_timer);
-  while(!(l==0 && r==0)){
-    mleft();
-  }
-  while(!(l==1 && r==1)){
-    mleft();
-  }
   mstop();
+  mleft();
+  delay(400);
+  mstop();
+  delay(1000);
+  int l=1,r=1;
+  while(l==1 or r==1){
+    int l=digitalRead(LineFollower1);  //SensorLeft
+    int r=digitalRead(LineFollower2);  //SensorRight
+    sleft();
+    mstop();
+    if(l==0 and r==0) break;
+  }
 }
 
-int turnright(int l,int r){
+int turnright(){
   mforward();
   delay(gangan_timer);
-  while(!(l==0 && r==0)){
-    mright();
+  mstop();
+  mright();
+  delay(400);
+  mstop();
+  delay(1000);
+  int l=1,r=1;
+  while(l==1 or r==1){
+    int l=digitalRead(LineFollower1);  //SensorLeft
+    int r=digitalRead(LineFollower2);  //SensorRight
+    sright();
+    mstop();
+    if(l==0 and r==0) break;
   }
-  while(!(l==1 && r==1)){
-    mright();
-  }
+  
   mstop();
 }
 
@@ -302,12 +364,12 @@ int mleft(){//0010
   analogWrite(In1,spd);
   analogWrite(In2,0);
   analogWrite(In3,0);
-  analogWrite(In4,0);
+  analogWrite(In4,spd);
 }
 
 int mright(){//1000
   analogWrite(In1,0);
-  analogWrite(In2,0);
+  analogWrite(In2,spd);
   analogWrite(In3,spd);
   analogWrite(In4,0);
 }
@@ -329,4 +391,18 @@ int m_up(){
 int m_down(){
   analogWrite(In5,0);
   analogWrite(In6,control);
+}
+
+int sright(){
+  mright();
+  delay(10);
+  mstop();
+  delay(40);
+}
+
+int sleft(){
+  mleft();
+  delay(10);
+  mstop();
+  delay(40);
 }
