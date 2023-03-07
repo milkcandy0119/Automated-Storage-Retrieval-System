@@ -14,6 +14,7 @@ cint timer=10; //ms *1ms=0.001s
 cint LineFollower1=10;  //SensorLeft
 cint LineFollower2=11;  //SensorRight
 cint LineFollower3=13;  //SensorMark
+cint LineFollower4=2; //updown
 
 //L298N
 cint In1=3; //motor input1(right)
@@ -23,7 +24,7 @@ cint In4=6; //motor input4(left)
 cint In5=7; //lift input1
 cint In6=8; //lift input2
 
-cint rgb=2;
+//cint rgb=2;
 
 double is_item=1/8;
 int init_speed=40;
@@ -42,6 +43,7 @@ void setup() {
   pinMode(LineFollower1,INP);
   pinMode(LineFollower2,INP);
   pinMode(LineFollower3,INP);
+  pinMode(LineFollower4,INP);
   //Main motor
   pinMode(In1,OTP);
   pinMode(In2,OTP);
@@ -50,23 +52,23 @@ void setup() {
   //lift motor
   pinMode(In5,OTP);
   pinMode(In6,OTP);
-  pinMode(rgb,OTP);
+  //pinMode(rgb,OTP);
   
 }
 
 void loop() {
   SM=1;
-  digitalWrite(rgb,1);
-  delay(1000);
-  digitalWrite(rgb,0);
+  //digitalWrite(rgb,1);
+  //delay(1000);
+  //digitalWrite(rgb,0);
   Serial.println("ouob");
   In_Client();
   if(task == 5){
-    for(int i=0;i<20;i++){
+    for(int i=0;i<5;i++){
       m_up();
-      delay(5);
+      delay(80);
       mstop();
-      delay(40);
+      delay(10);
     }
     mstop();
   }else if(task == 8){
@@ -102,8 +104,17 @@ void loop() {
     }
     mstop();
     delay(1000);
-    turnleft();
+    turnright();
     mstop();
+  }else if(task==6){
+    for(int i=0;i<10;i++){
+      mleft();
+      delay(500);
+      mstop();
+      mright();
+      delay(500);
+      mstop();
+    }
   }else{
     mstop();
   }
@@ -158,20 +169,23 @@ void In_Client(){
 }
 
 void up_and_down(int op){
+  int layer=digitalRead(LineFollower4);
   if(op==0){ //0 down
-    m_down();
-    delay(1000);
-    //待調整...
-    //待調整...
-    //待調整...
+    while(layer){
+      m_down();
+      delay(5);
+      mstop();
+      delay(40);
+    }
     mstop();
   }
   else if(op==1){ //1 up
-    m_up();
-    delay(1000);
-    //待調整...
-    //待調整...
-    //待調整...
+    while(layer){
+      m_up();
+      delay(5);
+      mstop();
+      delay(40);
+    }
     mstop();
   }
   else{ //3 put in
