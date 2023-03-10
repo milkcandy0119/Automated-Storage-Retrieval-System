@@ -11,8 +11,8 @@ cint gangan_timer=370; //node
 cint timer=10; //ms *1ms=0.001s
 
 //Sensor
-cint LineFollower1=10;  //SensorLeft
-cint LineFollower2=11;  //SensorRight
+cint LineFollower1=11;  //SensorLeft
+cint LineFollower2=12;  //SensorRight
 cint LineFollower3=13;  //SensorMark
 cint LineFollower4=2; //updown
 
@@ -97,11 +97,34 @@ void loop() {
     mstop();
   }else if(task == 9){
     mstop();
+    for(int i=0;i<3;i++){
+      while(SM){
+        SM=digitalRead(LineFollower3);  //SensorMark 右
+        Serial.println(SM);
+        linefollower();
+        //Serial.println (SR);
+      }
+      if(i<2){
+        /*mstop();
+        mforward();
+        delay(200);
+        mstop();*/
+        SM=digitalRead(LineFollower3);
+        while(SM==0){
+           mforward();
+           SM=digitalRead(LineFollower3);
+        }
+        mstop();
+      }
+      SM=digitalRead(LineFollower3);
+    }
+    /*
     while(SM){
-      SM=digitalRead(LineFollower3);  //SensorMark
+      SM=digitalRead(LineFollower3);  //SensorMark 右
       linefollower();
       //Serial.println (SR);
     }
+    */
     mstop();
     delay(1000);
     turnright();
