@@ -64,20 +64,26 @@ void loop() {
   Serial.println("ouob");
   In_Client();
   if(task == 5){
+    up_and_down(0);
+    /*
     for(int i=0;i<5;i++){
       m_up();
       delay(80);
       mstop();
       delay(10);
     }
+    */
     mstop();
   }else if(task == 8){
+    up_and_down(1);
+    /*
     for(int i=0;i<20;i++){
       m_down();
       delay(5);
       mstop();
       delay(40);
     }
+    */
     mstop();
   }else if(task == 1){
     mforward();
