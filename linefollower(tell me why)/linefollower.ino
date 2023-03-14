@@ -64,7 +64,7 @@ void loop() {
   Serial.println("ouob");
   In_Client();
   if(task == 5){
-    up_and_down(0);
+    up_and_down(1);
     /*
     for(int i=0;i<5;i++){
       m_up();
@@ -75,7 +75,7 @@ void loop() {
     */
     mstop();
   }else if(task == 8){
-    up_and_down(1);
+    up_and_down(0);
     /*
     for(int i=0;i<20;i++){
       m_down();
@@ -101,6 +101,20 @@ void loop() {
     mright();
     delay(1000);
     mstop();
+  }else if(task == 6){
+    for(int i=0;i<5;i++){
+      m_up();
+      delay(80);
+      mstop();
+      delay(10);
+    }
+  }else if(task == 7){
+    for(int i=0;i<20;i++){
+      m_down();
+      delay(5);
+      mstop();
+      delay(40);
+    }
   }else if(task == 9){
     mstop();
     for(int i=0;i<3;i++){
@@ -200,20 +214,24 @@ void In_Client(){
 void up_and_down(int op){
   int layer=digitalRead(LineFollower4);
   if(op==0){ //0 down
+    layer=digitalRead(LineFollower4);
     while(layer){
+      layer=digitalRead(LineFollower4);
       m_down();
-      delay(5);
+      delay(2);
       mstop();
-      delay(40);
+      delay(16);
     }
     mstop();
   }
   else if(op==1){ //1 up
+    layer=digitalRead(LineFollower4);
     while(layer){
+      layer=digitalRead(LineFollower4);
       m_up();
-      delay(5);
+      delay(6);
       mstop();
-      delay(40);
+      delay(1);
     }
     mstop();
   }
