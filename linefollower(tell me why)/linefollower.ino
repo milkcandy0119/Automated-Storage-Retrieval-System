@@ -218,9 +218,13 @@ void up_and_down(int op){
     while(layer){
       layer=digitalRead(LineFollower4);
       m_down();
-      delay(2);
+      layer=digitalRead(LineFollower4);
+      delay(1);
+      layer=digitalRead(LineFollower4);
       mstop();
-      delay(16);
+      layer=digitalRead(LineFollower4);
+      delay(6);
+      layer=digitalRead(LineFollower4);
     }
     mstop();
   }
@@ -230,8 +234,10 @@ void up_and_down(int op){
       layer=digitalRead(LineFollower4);
       m_up();
       delay(6);
+      layer=digitalRead(LineFollower4);
       mstop();
       delay(1);
+      layer=digitalRead(LineFollower4);
     }
     mstop();
   }
