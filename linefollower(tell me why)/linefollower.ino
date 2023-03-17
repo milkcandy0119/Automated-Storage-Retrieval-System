@@ -58,32 +58,13 @@ void setup() {
 
 void loop() {
   SM=1;
-  //digitalWrite(rgb,1);
-  //delay(1000);
-  //digitalWrite(rgb,0);
   Serial.println("ouob");
   In_Client();
   if(task == 5){
     up_and_down(1);
-    /*
-    for(int i=0;i<5;i++){
-      m_up();
-      delay(80);
-      mstop();
-      delay(10);
-    }
-    */
     mstop();
   }else if(task == 8){
     up_and_down(0);
-    /*
-    for(int i=0;i<20;i++){
-      m_down();
-      delay(5);
-      mstop();
-      delay(40);
-    }
-    */
     mstop();
   }else if(task == 1){
     mforward();
@@ -125,10 +106,6 @@ void loop() {
         //Serial.println (SR);
       }
       if(i<2){
-        /*mstop();
-        mforward();
-        delay(200);
-        mstop();*/
         SM=digitalRead(LineFollower3);
         while(SM==0){
            mforward();
@@ -138,13 +115,6 @@ void loop() {
       }
       SM=digitalRead(LineFollower3);
     }
-    /*
-    while(SM){
-      SM=digitalRead(LineFollower3);  //SensorMark 右
-      linefollower();
-      //Serial.println (SR);
-    }
-    */
     mstop();
     delay(1000);
     turnright();
@@ -161,39 +131,6 @@ void loop() {
   }else{
     mstop();
   }
-  
-  /*
-  mstop();
-  In_Client();
-  Serial.println (task);
-  //do task
-  
-  //data[task]=(data[task]+1)%2;// 1 in 0 out
-  while(SM!=1){
-    linefollower(SL,SR);
-  }
-  mstop();
-  
-  turnright(SL,SR);
-  int count=0;
-  while(count != (task/3==0)? task/3 : (task+3)/3){  //待改task==count 怪怪的 OK
-    if(SM==1){
-      mstop();
-      count++;
-      delay(1000);
-    }
-    else{
-      linefollower(SL,SR);
-    }
-  }
-  turnright(SL,SR);
-  up_and_down(1); //get 1~3 4~6 7~9
-  while(SM!=1){
-    linefollower(SL,SR);
-  }
-  mstop();
-  up_and_down(3);
-  */
 }
 
 void In_Client(){
@@ -215,6 +152,13 @@ void up_and_down(int op){
   int layer=digitalRead(LineFollower4);
   if(op==0){ //0 down
     layer=digitalRead(LineFollower4);
+    while(!layer){
+      m_down();
+      delay(6);
+      mstop();
+      delay(1);
+      layer=digitalRead(LineFollower4);
+    }
     while(layer){
       layer=digitalRead(LineFollower4);
       m_down();
@@ -230,6 +174,13 @@ void up_and_down(int op){
   }
   else if(op==1){ //1 up
     layer=digitalRead(LineFollower4);
+    while(!layer){
+      m_up();
+      delay(6);
+      mstop();
+      delay(1);
+      layer=digitalRead(LineFollower4);
+    }
     while(layer){
       layer=digitalRead(LineFollower4);
       m_up();
