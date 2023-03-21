@@ -60,6 +60,32 @@ void loop() {
   SM=1;
   Serial.println("ouob");
   In_Client();
+  //(task%3)==0 ? 3 : task%3
+  int opkey=(task%3)==0 ? 3 : task%3;
+  mstop();
+  for(int i=0;i<opkey;i++){
+    while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      linefollower();
+      //Serial.println (SR);
+    }
+    if(i<opkey-1){
+      SM=digitalRead(LineFollower3);
+      while(SM==0){
+        mforward();
+        SM=digitalRead(LineFollower3);
+      }
+      mstop();   
+    }
+    SM=digitalRead(LineFollower3);
+  }
+    mstop();
+    delay(1000);
+    turnright();
+    mstop();
+  
+  /*
   if(task == 5){
     up_and_down(1);
     mstop();
@@ -131,6 +157,7 @@ void loop() {
   }else{
     mstop();
   }
+  */
 }
 
 void In_Client(){
