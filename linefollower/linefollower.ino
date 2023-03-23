@@ -1,33 +1,21 @@
-#include <IRremote.h> 
-
+#include <SoftwareSerial.h>
 #define cint const int
 #define H HIGH
 #define L LOW
 #define INP INPUT
 #define OTP OUTPUT
-//car MP3
-#define botton_0 0xFF6897
-#define botton_1 0xFF30CF
-#define botton_2 0xFF18E7 
-#define botton_3 0xFF7A85
-#define botton_4 0xFF10EF
-#define botton_5 0xFF38C7
-#define botton_6 0xFF5AA5
-#define botton_7 0xFF42BD
-#define botton_8 0xFF4AB5
-#define botton_9 0xFF52AD
-
 
 cint spd=255;  //0-255 speed
 cint control=255; //lift motor speed
 cint gangan_timer=370; //node
 cint timer=10; //ms *1ms=0.001s
-//RECV
-cint RECV_PIN = 9;
+
 //Sensor
-cint LineFollower1=10;  //SensorLeft
-cint LineFollower2=11;  //SensorRight
+cint LineFollower1=11;  //SensorLeft
+cint LineFollower2=12;  //SensorRight
 cint LineFollower3=13;  //SensorMark
+cint LineFollower4=2; //updown
+
 //L298N
 cint In1=3; //motor input1(right)
 cint In2=4; //motor input2(right)
@@ -36,24 +24,26 @@ cint In4=6; //motor input4(left)
 cint In5=7; //lift input1
 cint In6=8; //lift input2
 
-cint rgb=2;
+//cint rgb=2;
 
 double is_item=1/8;
 int init_speed=40;
 
-IRrecv irrecv(RECV_PIN); // 初始化紅外線訊號輸入
-decode_results results; // 儲存訊號的結構
-
-int task,SM=1;
+int task=0,SM=1;
 
 int data[10];
 
+SoftwareSerial BT(9,10);
+
 void setup() {
+  BT.begin(9600);
   Serial.begin(9600);
+  Serial.println("bot is ready");
   //Line Follower
   pinMode(LineFollower1,INP);
   pinMode(LineFollower2,INP);
   pinMode(LineFollower3,INP);
+  pinMode(LineFollower4,INP);
   //Main motor
   pinMode(In1,OTP);
   pinMode(In2,OTP);
@@ -62,133 +52,204 @@ void setup() {
   //lift motor
   pinMode(In5,OTP);
   pinMode(In6,OTP);
-  pinMode(rgb,OTP);
-  //RECV
-  irrecv.enableIRIn(); // 啟動接收
+  //pinMode(rgb,OTP);
+  
 }
 
 void loop() {
   SM=1;
-  digitalWrite(rgb,1);
-  delay(1000);
-  digitalWrite(rgb,0);
+  Serial.println("ouob");
   In_Client();
-  if(task == 1){
-    for(int i=0;i<20;i++){
-      m_up();
-      delay(5);
-      mstop();
-      delay(40);
+  //(task%3)==0 ? 3 : task%3
+  int opkey=(task%3)==0 ? 3 : task%3;
+  mstop();
+  for(int i=0;i<opkey;i++){
+    while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      linefollower();
+      //Serial.println (SR);
     }
+    if(i<opkey-1){
+      SM=digitalRead(LineFollower3);
+      while(SM==0){
+        mforward();
+        SM=digitalRead(LineFollower3);
+      }
+      mstop();   
+    }
+    SM=digitalRead(LineFollower3);
+  }
+  mstop();
+  delay(1000);
+  turnright();
+  mstop();
+
+
+  if((task-1)/3==0){
+    //put in
+  }else if((task-1)/3==1){
+    up_and_down(1);
+    mstop();
+    delay(1000);
+    //put in
+  }else if((task-1)/3==2){
+    up_and_down(1);
+    mstop();
+    delay(1000);
+    up_and_down(1);
+    mstop();
+    delay(1000);
+    //put in
+  }
+  
+  SM=digitalRead(LineFollower3);
+  while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      mback();
+      //Serial.println (SR);
+  }
+  turnright();
+  SM=digitalRead(LineFollower3);
+  while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      mback();
+      //Serial.println (SR);
+  }
+  /*
+  if(task == 5){
+    up_and_down(1);
+    mstop();
+  }else if(task == 8){
+    up_and_down(0);
+    mstop();
+  }else if(task == 1){
+    mforward();
+    delay(1000);
+    mstop();
+  }else if(task == 4){
+    mback();
+    delay(1000);
+    mstop();
+  }else if(task == 2){
+    mleft();
+    delay(1000);
     mstop();
   }else if(task == 3){
+    mright();
+    delay(1000);
+    mstop();
+  }else if(task == 6){
+    for(int i=0;i<5;i++){
+      m_up();
+      delay(80);
+      mstop();
+      delay(10);
+    }
+  }else if(task == 7){
     for(int i=0;i<20;i++){
       m_down();
       delay(5);
       mstop();
       delay(40);
     }
+  }else if(task == 9){
     mstop();
-  }else if(task == 2){
-    mforward();
-    delay(1000);
-    mstop();
-  }else if(task == 8){
-    mback();
-    delay(1000);
-    mstop();
-  }else if(task == 4){
-    mleft();
-    delay(1000);
-    mstop();
-  }else if(task == 6){
-      analogWrite(rgb,1);
-      delay(2000);
-      analogWrite(rgb,0);
-    /*
-    mright();
-    delay(1000);
-    mstop();
-    \*/
-  }else if(task == 5){
-    mstop();
-    while(SM){
-      SM=digitalRead(LineFollower3);  //SensorMark
-      linefollower();
-      //Serial.println (SR);
+    for(int i=0;i<3;i++){
+      while(SM){
+        SM=digitalRead(LineFollower3);  //SensorMark 右
+        Serial.println(SM);
+        linefollower();
+        //Serial.println (SR);
+      }
+      if(i<2){
+        SM=digitalRead(LineFollower3);
+        while(SM==0){
+           mforward();
+           SM=digitalRead(LineFollower3);
+        }
+        mstop();
+      }
+      SM=digitalRead(LineFollower3);
     }
     mstop();
     delay(1000);
-    turnleft();
+    turnright();
     mstop();
+  }else if(task==6){
+    for(int i=0;i<10;i++){
+      mleft();
+      delay(500);
+      mstop();
+      mright();
+      delay(500);
+      mstop();
+    }
   }else{
     mstop();
   }
-  
-  /*
-  mstop();
-  In_Client();
-  Serial.println (task);
-  //do task
-  
-  //data[task]=(data[task]+1)%2;// 1 in 0 out
-  while(SM!=1){
-    linefollower(SL,SR);
-  }
-  mstop();
-  
-  turnright(SL,SR);
-  int count=0;
-  while(count != (task/3==0)? task/3 : (task+3)/3){  //待改task==count 怪怪的 OK
-    if(SM==1){
-      mstop();
-      count++;
-      delay(1000);
-    }
-    else{
-      linefollower(SL,SR);
-    }
-  }
-  turnright(SL,SR);
-  up_and_down(1); //get 1~3 4~6 7~9
-  while(SM!=1){
-    linefollower(SL,SR);
-  }
-  mstop();
-  up_and_down(3);
   */
 }
 
 void In_Client(){
-  irrecv.resume();
-  while(!results.value!=botton_0){
-    if(irrecv.decode(&results)){
-      CheckCode();
-      irrecv.resume(); // 重複偵測
-      if(results.value==botton_0){
-        Serial.println ("Out!");
-        return;
+  int val;
+  while(1){
+    if(BT.available()){
+      val=BT.read()-48;
+      if(val==0){
+        //Serial.print(val);
+        break;
       }
-      delay(1000);
+      task=val;
+      Serial.print(task);
     }
-  } 
+  }
 }
 
 void up_and_down(int op){
+  int layer=digitalRead(LineFollower4);
   if(op==0){ //0 down
-    m_down();
-    delay(1000);
-    //待調整...
-    //待調整...
-    //待調整...
+    layer=digitalRead(LineFollower4);
+    while(!layer){
+      m_down();
+      delay(6);
+      mstop();
+      delay(1);
+      layer=digitalRead(LineFollower4);
+    }
+    while(layer){
+      layer=digitalRead(LineFollower4);
+      m_down();
+      layer=digitalRead(LineFollower4);
+      delay(1);
+      layer=digitalRead(LineFollower4);
+      mstop();
+      layer=digitalRead(LineFollower4);
+      delay(6);
+      layer=digitalRead(LineFollower4);
+    }
     mstop();
   }
   else if(op==1){ //1 up
-    m_up();
-    delay(1000);
-    //待調整...
-    //待調整...
-    //待調整...
+    layer=digitalRead(LineFollower4);
+    while(!layer){
+      m_up();
+      delay(6);
+      mstop();
+      delay(1);
+      layer=digitalRead(LineFollower4);
+    }
+    while(layer){
+      layer=digitalRead(LineFollower4);
+      m_up();
+      delay(6);
+      layer=digitalRead(LineFollower4);
+      mstop();
+      delay(1);
+      layer=digitalRead(LineFollower4);
+    }
     mstop();
   }
   else{ //3 put in
@@ -202,84 +263,6 @@ void up_and_down(int op){
     mstop();
   }
   mback();
-}
-
-void CheckCode(){
-  switch(results.value){
-    case botton_0:
-      Serial.println ("Button 0");
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);
-      break;
-    case botton_1:
-      Serial.println ("Button 1");
-      task=1;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);      
-      break;
-    case botton_2:
-      Serial.println ("Button 2");      
-      task=2;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);     
-      break;
-    case botton_3:
-      Serial.println ("Button 3");
-      task=3;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);     
-      break;
-    case botton_4:
-      Serial.println ("Button 4");
-      task=4;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);     
-      break;
-    case botton_5:
-      Serial.println ("Button 5");
-      task=5;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);      
-      break;
-    case botton_6:
-      Serial.println ("Button 6");
-      task=6;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);
-      break;
-    case botton_7:
-      Serial.println ("Button 7");
-      task=7;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);      
-      break;
-    case botton_8:
-      Serial.println ("Button 8");
-      task=8;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);
-      break;
-    case botton_9: 
-      Serial.println ("Button 9");
-      task=9;
-      digitalWrite(rgb,1);
-      delay(2000);
-      digitalWrite(rgb,0);      
-      break;
-        
-    default:
-      Serial.println(results.value, HEX);
-      break;
-  }
 }
 
 //1=white 0=black
