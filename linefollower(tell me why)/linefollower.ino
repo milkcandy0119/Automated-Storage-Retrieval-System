@@ -80,11 +80,64 @@ void loop() {
     }
     SM=digitalRead(LineFollower3);
   }
+  mstop();
+  delay(1000);
+  turnright();
+  mstop();
+
+
+  if((task-1)/3==0){
+    //put in
+  }else if((task-1)/3==1){
+    up_and_down(1);
     mstop();
     delay(1000);
-    turnright();
+    //put in
+  }else if((task-1)/3==2){
+    up_and_down(1);
     mstop();
+    delay(1000);
+    up_and_down(1);
+    mstop();
+    delay(1000);
+    //put in
+  }
   
+  SM=digitalRead(LineFollower3);
+  while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      mback();
+      //Serial.println (SR);
+  }
+  turnright();
+  SM=digitalRead(LineFollower3);
+  while(SM){
+      SM=digitalRead(LineFollower3);  //SensorMark 右
+      Serial.println(SM);
+      linefollower();
+      //Serial.println (SR);
+  }
+  mstop();
+  //歸零
+  if((task-1)/3==0){
+    //put in
+  }else if((task-1)/3==1){
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    //put in
+  }else if((task-1)/3==2){
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    //put in
+  }
+  turnright();
+  mstop();
   /*
   if(task == 5){
     up_and_down(1);
