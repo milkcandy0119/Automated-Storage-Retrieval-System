@@ -91,6 +91,11 @@ void loop() {
   }else if((task-1)/3==1){
     up_and_down(1);
     mstop();
+    int layer=0;
+    delay(1000);
+    m_down();
+    delay(25);
+    mstop();
     delay(1000);
     //put in
   }else if((task-1)/3==2){
@@ -102,7 +107,17 @@ void loop() {
     delay(1000);
     //put in
   }
+  delay(1000);
+  SM=digitalRead(LineFollower3);
+  while(SM!=0){
+    linefollower();
+    SM=digitalRead(LineFollower3);
+  }
+  mstop();
   
+  //回程
+  mback();
+  delay(500);
   SM=digitalRead(LineFollower3);
   while(SM){
       SM=digitalRead(LineFollower3);  //SensorMark 右
@@ -110,14 +125,39 @@ void loop() {
       mback();
       //Serial.println (SR);
   }
+  delay(10);
   turnright();
   SM=digitalRead(LineFollower3);
   while(SM){
       SM=digitalRead(LineFollower3);  //SensorMark 右
       Serial.println(SM);
-      mback();
+      linefollower();
       //Serial.println (SR);
   }
+  mstop();
+  //歸零
+  if((task-1)/3==0){
+    //put in
+  }else if((task-1)/3==1){
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    //put in
+  }else if((task-1)/3==2){
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    up_and_down(0);
+    mstop();
+    delay(1000);
+    //put in
+  }
+  mleft();
+  delay(100);
+  turnleft();
+  mstop();
+  
+  
   /*
   if(task == 5){
     up_and_down(1);
@@ -252,7 +292,7 @@ void up_and_down(int op){
     }
     mstop();
   }
-  else{ //3 put in
+  else if(op==2){ //3 put in
      m_up();
      m_down();
      mforward();
@@ -376,6 +416,13 @@ int m_down(){
   analogWrite(In6,control);
 }
 
+int sdown(){
+  m_down();
+  delay(10);
+  mstop();
+  delay(40);
+}
+
 int sright(){
   mright();
   delay(10);
@@ -385,7 +432,7 @@ int sright(){
 
 int sleft(){
   mleft();
-  delay(10);
+  delay(1);
   mstop();
-  delay(40);
+  delay(100);
 }
