@@ -127,6 +127,17 @@ void loop() {
   }
   delay(10);
   turnright();
+  delay(1000);
+  mforward();
+  delay(300);
+  mstop();
+  delay(100);
+  mleft();
+  delay(100);
+  mstop();
+  mright();
+  delay(100);
+  mstop();
   SM=digitalRead(LineFollower3);
   while(SM){
       SM=digitalRead(LineFollower3);  //SensorMark 右
@@ -135,6 +146,7 @@ void loop() {
       //Serial.println (SR);
   }
   mstop();
+  
   //歸零
   if((task-1)/3==0){
     //put in
@@ -152,9 +164,8 @@ void loop() {
     delay(1000);
     //put in
   }
-  mleft();
-  delay(100);
-  turnleft();
+  //delay(1000);
+  //turnleft();
   mstop();
   
   
