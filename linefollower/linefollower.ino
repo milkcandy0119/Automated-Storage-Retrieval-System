@@ -84,7 +84,7 @@ void loop() {
   delay(1000);
   turnright();
   mstop();
-
+  
 
   if((task-1)/3==0){
     //put in
@@ -93,7 +93,7 @@ void loop() {
     mstop();
     int layer=0;
     delay(1000);
-    m_down();
+    //m_down();
     delay(25);
     mstop();
     delay(1000);
@@ -107,14 +107,25 @@ void loop() {
     delay(1000);
     //put in
   }
+  //shaking();
   delay(1000);
   SM=digitalRead(LineFollower3);
   while(SM!=0){
     linefollower();
     SM=digitalRead(LineFollower3);
   }
+  mstop(); 
+  mforward();
+  delay(300);
   mstop();
-  
+  delay(1000);
+  m_down();
+  delay(100);
+  mstop();
+  delay(3000);
+  mback();
+  delay(400);
+  mstop();
   //回程
   mback();
   delay(500);
@@ -130,14 +141,7 @@ void loop() {
   delay(1000);
   mforward();
   delay(300);
-  mstop();
-  delay(100);
-  mleft();
-  delay(100);
-  mstop();
-  mright();
-  delay(100);
-  mstop();
+  shaking();
   SM=digitalRead(LineFollower3);
   while(SM){
       SM=digitalRead(LineFollower3);  //SensorMark 右
@@ -149,7 +153,9 @@ void loop() {
   
   //歸零
   if((task-1)/3==0){
-    //put in
+    up_and_down(1);
+    mstop();
+    delay(1000);
   }else if((task-1)/3==1){
     up_and_down(0);
     mstop();
@@ -164,8 +170,9 @@ void loop() {
     delay(1000);
     //put in
   }
-  //delay(1000);
-  //turnleft();
+  shaking();
+  delay(1000);
+  turnleft();
   mstop();
   
   
@@ -443,7 +450,18 @@ int sright(){
 
 int sleft(){
   mleft();
-  delay(1);
+  delay(10);
   mstop();
+  delay(40);
+}
+
+void shaking(){
+  mstop();
+  delay(500);
+  mleft();
   delay(100);
+  mstop();
+  mright();
+  delay(100);
+  mstop();
 }
